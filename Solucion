@@ -1,0 +1,79 @@
+CREATE TABLE `nacimientos` (
+`Nombre` varchar(12) NOT NULL,
+`Apellido1` varchar(12) NOT NULL,
+`Apellido2` varchar(12) NOT NULL,
+`FechaNac` date DEFAULT NULL,
+`Provincia` varchar(2) DEFAULT NULL,
+PRIMARY KEY (`Nombre`,`Apellido1`,`Apellido2`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+INSERT INTO `nacimientos` VALUES ('Alberto','Ferro','L¢pez','2005-01-20','H'),('Alberto','R¡os','Roma','2005-10-16','H'),('Blanca','Luengo','Rojas','2006-12-12','B'),('Carmen','Lona','Cruz','2005-02-14','AL'),('Fernando','Fern ndez','Fern ndez','2005-01-02','AL'),('Isabel','Alonso','L¢pez','2004-04-03','V'),('Manuel','Robles','Santos','2006-06-06','M'),('M¢nica','Barrios','Gil','2005-03-31','AL'),('Ramona','Ant¢n','Barrios','2006-11-10','AL'),('Ricardo','Fern ndez','Alto','2003-02-28','CA'),('Roberto','Barata','S nchez','2005-11-01','M'),('Rosa','Alba','Ruiz','2005-02-14','M');
+
+insert into nacimientos(Nombre,Apellido1,Apellido2,FechaNac,Provincia) values
+    -> ("Ana","Sáenz","López","2008-01-05","SE");
+
+ insert into nacimientos(Nombre,Apellido1,Apellido2,FechaNac,Provincia) values ("Concepción","Flores","Cruz","2009-02-27","SA");
+
+insert into nacimientos(Nombre,Apellido1,Apellido2,FechaNac,Provincia) values ("Inmaculada","Alba","Ruiz","2007-12-15","B");
+
+insert into nacimientos(Nombre,Apellido1,Apellido2,FechaNac,Provincia) values ("Felipe","Fernández","Gómez","2007-11-13","S");
+
+insert into nacimientos(Nombre,Apellido1,Apellido2,FechaNac,Provincia) values ("Sandra","Barata","Reyes","2008-05-21","M");
+
+insert into nacimientos(Nombre,Apellido1,Apellido2,FechaNac,Provincia) values ("Daniel","López","Rojas","2008-07-25","TO");
+
+insert into nacimientos(Nombre,Apellido1,Apellido2,FechaNac,Provincia) values ("Jaime","Ríos","Roma","2008-10-30","M");
+
+insert into nacimientos(Nombre,Apellido1,Apellido2,FechaNac,Provincia) values ("Miguel","Bendita","Gil","2009-03-17","MA");
+
+insert into nacimientos(Nombre,Apellido1,Apellido2,FechaNac,Provincia) values ("Raquel","Robles","Santos","2009-04-04","TO");
+
+insert into nacimientos(Nombre,Apellido1,Apellido2,FechaNac,Provincia) values ("Arantxa","Antón","Barrios","2009-04-04","M");
+
+insert into nacimientos(Nombre,Apellido1,Apellido2,FechaNac,Provincia) values ("Elisa","Alonso","López","2009-08-20","V");
+
+insert into nacimientos(Nombre,Apellido1,Apellido2,FechaNac,Provincia) values ("Rémulo","Fernández","Alto","2009-08-19","CA");
+
+
+CREATE TABLE `nacimientos09` (
+`Nombre` varchar(12) NOT NULL,
+`Apellido1` varchar(12) NOT NULL,
+`Apellido2` varchar(12) NOT NULL,
+`FechaNac` date DEFAULT NULL,
+`Provincia` varchar(2) DEFAULT NULL,
+PRIMARY KEY (`Nombre`,`Apellido1`,`Apellido2`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+insert into nacimientos09 select * from nacimientos where YEAR(FechaNac) = "2009";
+
+CREATE TABLE `nacimientosTauro` (
+`Nombre` varchar(12) NOT NULL,
+`Apellido1` varchar(12) NOT NULL,
+`Apellido2` varchar(12) NOT NULL,
+`FechaNac` date DEFAULT NULL,
+`Provincia` varchar(2) DEFAULT NULL,
+PRIMARY KEY (`Nombre`,`Apellido1`,`Apellido2`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+insert into nacimientosTauro select * from nacimientos where (MONTH(FechaNac) = 4 and DAY(FechaNac) >= 21 ) OR (MONTH(FechaNac) = 5 and DAY(FechaNac) <= 21 );
+
+
+update nacimientos set Provincia = "M" where Apellido1 like "%z" or Apellido2 like "%z";
+
+update nacimientos set Provincia = "AL" where Provincia = "MA";
+
+update nacimientos set FechaNac = DATE_ADD(FechaNac,INTERVAL 2 YEAR) where YEAR(FechaNac) < 2006;
+
+ update nacimientos set Nombre = Concat(Nombre," María"), Apellido1 = Concat("de ",Apellido1) where LEFT(Apellido1,1) = LEFT(Provincia,1);
+
+select *,timestampdiff(MONTH,FechaNac,Curdate()) from nacimientos where abs( timestampdiff(MONTH,FechaNac,Curdate()) - (select media from( select avg(timestampdiff(MONTH,FechaNac,Curdate())) as media from nacimientos ) as sel1 )) < 10;
+select avg(timestampdiff(MONTH,FechaNac,Curdate())) from nacimientos;
+
+update nacimientos set Nombre = Concat(Nombre,"Jr") where abs( timestampdiff(MONTH,FechaNac,Curdate()) - (select media from( select avg(timestampdiff(MONTH,FechaNac,Curdate())) as media from nacimientos ) as sel1 )) < 10;
+select * from nacimientos order by FechaNac;
+
+select Provincia from nacimientos where Nombre = "Isabel" and Apellido1 = "Alonso";
+select MONTH(FechaNac) from nacimientos where Nombre = "Isabel" and Apellido1 = "Alonso";
+
+update nacimientos09 set Provincia = (select Provincia from nacimientos where Nombre = "Isabel" and Apellido1 = "Alonso"), FechaNac = concat(YEAR(FechaNac),"-",(select MONTH(FechaNac) from nacimientos where Nombre = "Isabel" and Apellido1 = "Alonso"),"-",DAY(FechaNac)) where Nombre like "%e%" or Provincia = "M";
+
+
